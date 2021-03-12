@@ -6,6 +6,7 @@ declare namespace Responses {
     msg: string;
   };
 
+  /** 通用响应函数 */
   type baseResponse = <T>(data: T) => BaseResponse<T>;
 }
 

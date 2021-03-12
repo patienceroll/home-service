@@ -21,11 +21,7 @@ const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
     const db = client.db(config.db);
     const collect = db.collection<Data.HomeItem>(config.collections.home);
     const list: Data.HomeItem[] = [];
-    await collect
-      .find()
-      .forEach((item) => list.push(item))
-      .then();
-
+    await collect.find().forEach((item) => list.push(item));
     ctx.body = Response.baseResponse(list);
   });
 };
