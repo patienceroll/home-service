@@ -1,0 +1,23 @@
+{
+  "name": "home-service",
+  "version": "1.0.0",
+  "description": "home-service",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node ./src/app.ts"
+  },
+  "dependencies": {
+    "koa": "^2.13.1",
+    "koa-router": "^10.0.0",
+    "mongodb": "^3.6.4"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.1",
+    "@types/koa-router": "^7.4.1",
+    "@types/mongodb": "^3.6.9",
+    "@types/node": "^14.14.31",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
