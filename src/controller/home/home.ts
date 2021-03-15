@@ -24,6 +24,15 @@ const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
     await collect.find().forEach((item) => list.push(item));
     ctx.body = Response.baseResponse(list);
   });
+  router.post("新增选项", "/home", async (ctx) => {
+    // console.log(ctx);
+    console.log(ctx.request.body);
+    const db = client.db(config.db);
+    const collect = db.collection<Data.HomeItem>(config.collections.home);
+    const list: Data.HomeItem[] = [];
+    await collect.find().forEach((item) => list.push(item));
+    ctx.body = Response.baseResponse(list);
+  });
 };
 
 export default InitHomeRouters;

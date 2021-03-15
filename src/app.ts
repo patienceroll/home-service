@@ -1,5 +1,6 @@
 import Koa from "koa";
 import Router from "koa-router";
+import bodyParser from "koa-bodyparser";
 
 import config from "./config/config";
 
@@ -12,6 +13,7 @@ const App = async () => {
   const router = new Router(config.router);
   const mongoClient = await connectMongo();
 
+  koa.use(bodyParser());
   InitHomeRouters(koa, router, mongoClient);
 
   koa.use(router.routes());
