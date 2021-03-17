@@ -1,15 +1,15 @@
 import Koa from "koa";
 import Router from "koa-router";
 import { MongoClient } from "mongodb";
-import fs from "fs";
-import KoaStatic from "koa-static";
 
 import config from "../../config/config";
 import Validate from "../../helper/validate-value/validate-value";
 import Response from "../../base-response/base-response";
 import MongoAction from "../../mongo/action/action";
+import UploadFile from "../../common/upload-file/upload-file";
+
 import Data from "./data";
-import path from "path";
+
 import baseResponse from "../../base-response/base-response";
 
 /** 初始化 Home 的路由 */
@@ -55,60 +55,7 @@ const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
     const {
       request: { files },
     } = ctx;
-
-    if (typeof files === "undefined") {
-      ctx.body = Response.errResponese(1, null, "未获取到文件流");
-    } else {
-      if (Array.isArray(files.file)) {
-        const fileRead = fs.createReadStream(files.file[0].path);
-        const date = new Date();
-        const dateString = `${date.getFullYear()}${
-          date.getMonth() + 1
-        }${date.getDate()}`;
-        const filePath = `D:\\personal-program\\home-service\\src\\upload\\image\\${dateString}`;
-        const fileWrite = fs.createWriteStream(files.file[0].path);
-        if (fs.existsSync(filePath)) {
-          fs.mkdir(filePath, {}, (err) => {
-            if (err) {
-              console.error(err);
-            } else {
-              fileRead.pipe(fileWrite);
-              ctx.body = Response.baseResponse(
-                `${filePath}\\${(files as any).file[0].name}`
-              );
-            }
-          });
-        } else {
-          fileRead.pipe(fileWrite);
-          ctx.body = Response.baseResponse(
-            `${filePath}\\${(files as any).file[0].name}`
-          );
-        }
-      } else {
-        const fileRead = fs.createReadStream(files.file.path);
-        const date = new Date();
-        const dateString = `${date.getFullYear()}${
-          date.getMonth() + 1
-        }${date.getDate()}`;
-
-        const folderPath = `D:\\personal-program\\home-service\\src\\upload\\image\\${dateString}`;
-        const filePath = `${folderPath}\\${(files as any).file.name}`;
-        const fileWrite = fs.createWriteStream(filePath);
-        if (!fs.existsSync(folderPath)) {
-          fs.mkdir(folderPath, {}, (err) => {
-            if (err) {
-              console.error(err);
-            } else {
-              fileRead.pipe(fileWrite);
-            }
-          });
-        } else {
-          console.log(filePath);
-          fileRead.pipe(fileWrite);
-        }
-        ctx.body = Response.baseResponse(filePath);
-      }
-    }
+    await UploadFile(files, "D:\\personal-program\\home-service\\src\\upload\\image");
   });
 };
 
