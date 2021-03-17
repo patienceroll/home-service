@@ -19,20 +19,16 @@ type UoloadImageType = (
 const CreateFolder = (folderPath: string, level = 1) => {
   const folder = folderPath.split("\\");
   const currentfolderPath = folder.slice(0, level).join("\\");
+
   if (fs.existsSync(currentfolderPath)) {
     if (level !== folder.length) {
       CreateFolder(folderPath, ++level);
     }
   } else {
-    fs.mkdir(currentfolderPath, (err) => {
-      if (err) {
-        throw new Error(err.message);
-      } else {
-        if (level !== folder.length) {
-          CreateFolder(folderPath, ++level);
-        }
-      }
-    });
+    fs.mkdirSync(currentfolderPath);
+    if (level !== folder.length) {
+      CreateFolder(folderPath, ++level);
+    }
   }
 };
 
@@ -43,7 +39,6 @@ const CreateFolder = (folderPath: string, level = 1) => {
  * @returns
  */
 const UploadFile: UoloadImageType = (files, path = __dirname) => {
-  console.log(path);
   const date = new Date();
   const time = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
   const folderPath = `${path}\\${time}`;

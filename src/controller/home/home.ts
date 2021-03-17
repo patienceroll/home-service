@@ -55,7 +55,12 @@ const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
     const {
       request: { files },
     } = ctx;
-    await UploadFile(files, "D:\\personal-program\\home-service\\src\\upload\\image");
+    const data = await UploadFile(
+      files,
+      "D:\\personal-program\\home-service\\src\\upload\\image"
+    );
+
+    ctx.body = Response.baseResponse(data.fileName);
   });
 };
 
