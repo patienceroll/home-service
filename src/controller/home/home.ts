@@ -57,7 +57,8 @@ const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
     } = ctx;
     const data = await UploadFile(
       files,
-      "D:\\personal-program\\home-service\\src\\upload\\image"
+      // "D:\\personal-program\\home-service\\src\\upload\\image"
+      "C:\\Users\\Administrator\\Desktop\\nginx-1.19.7\\html\\upload\\image"
     );
 
     ctx.body = Response.baseResponse(data.fileName);
