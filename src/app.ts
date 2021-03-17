@@ -1,6 +1,6 @@
 import Koa from "koa";
 import Router from "koa-router";
-import bodyParser from "koa-bodyparser";
+import KoaBody from "koa-body";
 
 import config from "./config/config";
 
@@ -13,11 +13,15 @@ const App = async () => {
   const router = new Router(config.router);
   const mongoClient = await connectMongo();
 
-  koa.use(bodyParser());
   InitHomeRouters(koa, router, mongoClient);
 
-  koa.use(router.routes());
+  koa.use(
+    KoaBody({
+      multipart: true,
+    })
+  );
 
+  koa.use(router.routes());
   koa.listen(config.port);
   console.log(`app is running at http://localhost:${config.port}`);
 };

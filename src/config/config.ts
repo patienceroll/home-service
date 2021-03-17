@@ -21,7 +21,7 @@ type configType = {
 };
 
 const config: configType = {
-  port: 3000,
+  port: 3001,
   dbUrl: "mongodb://localhost:27017",
   db: "home",
   collections: {
