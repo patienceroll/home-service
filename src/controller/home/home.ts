@@ -10,7 +10,7 @@ import Data from "./data";
 /** 初始化Home相关的路由 */
 const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.get("首页列表", "/home", async (ctx) => {
-    console.log(ctx.request);
+    console.log(ctx.req);
     const db = client.db(config.db);
     const collect = db.collection<Data.HomeItem>(config.collections.home);
     const list: Data.HomeItem[] = [];
@@ -19,7 +19,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       .forEach((item) =>
         list.push({
           ...item,
-          image: `${ctx.request.header.referer}${item.image}`,
+          image: `http://gsea.top/${item.image}`,
         })
       );
     ctx.body = Response.baseResponse(list);
