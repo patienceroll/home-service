@@ -11,6 +11,8 @@ type UoloadImageType = (
   filePath: string | string[];
 }>;
 
+const root = "C:\\Users\\Administrator\\Desktop\\nginx-1.19.7\\html";
+
 /**
  * ## 递归生成文件夹路径
  * @param folderPath  文件夹路径
@@ -38,10 +40,10 @@ const CreateFolder = (folderPath: string, level = 1) => {
  * @param folderPath 文件保存的路径
  * @returns
  */
-const UploadFile: UoloadImageType = (files, path = __dirname) => {
+const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
   const date = new Date();
   const time = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
-  const folderPath = `${path}\\${time}`;
+  const folderPath = `${root + path}\\${time}`;
   return new Promise((resolve, reject) => {
     if (typeof files === "undefined") return reject("未获取到文件流");
     const { file } = files;
@@ -55,8 +57,8 @@ const UploadFile: UoloadImageType = (files, path = __dirname) => {
         const filePath = `${folderPath}\\${+date}-${fileItem.name}`;
         const fileWrite = fs.createWriteStream(filePath);
         fileReader.pipe(fileWrite);
-        FileNames.push(fileItem.name);
-        filePathes.push(filePath);
+        FileNames.push(`${+date}-${fileItem.name}`);
+        filePathes.push(`${path}\\${+date}-${fileItem.name}`);
       });
       resolve({
         fileName: FileNames,
@@ -71,7 +73,7 @@ const UploadFile: UoloadImageType = (files, path = __dirname) => {
       fileReader.pipe(fileWrite);
       resolve({
         fileName: `${+date}-${file.name}`,
-        filePath,
+        filePath: `${path}\\${+date}-${file.name}`,
       });
     }
   });
