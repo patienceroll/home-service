@@ -226,6 +226,11 @@
   resolved "http://47.103.72.200:4873/@types%2frange-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha1-fuMwunyq+5gJC+zoal7kQRWQTCw=
 
+"@types/readline-sync@^1.4.3":
+  version "1.4.3"
+  resolved "http://47.103.72.200:4873/@types%2freadline-sync/-/readline-sync-1.4.3.tgz#eac55a39d5a349912062c9e5216cd550c07fd9c8"
+  integrity sha1-6sVaOdWjSZEgYsnlIWzVUMB/2cg=
+
 "@types/serve-static@*":
   version "1.13.9"
   resolved "http://47.103.72.200:4873/@types%2fserve-static/-/serve-static-1.13.9.tgz#aacf28a85a05ee29a11fb7c3ead935ac56f33e4e"
@@ -1650,6 +1655,11 @@ readable-stream@^2.3.5:
     safe-buffer "~5.1.1"
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
+
+readline-sync@^1.4.10:
+  version "1.4.10"
+  resolved "http://47.103.72.200:4873/readline-sync/-/readline-sync-1.4.10.tgz#41df7fbb4b6312d673011594145705bf56d8873b"
+  integrity sha1-Qd9/u0tjEtZzARWUFFcFv1bYhzs=
 
 regex-not@^1.0.0, regex-not@^1.0.2:
   version "1.0.2"

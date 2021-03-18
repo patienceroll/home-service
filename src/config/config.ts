@@ -1,4 +1,5 @@
 import Router from "koa-router";
+import readLineSync from "readline-sync";
 
 type configType = {
   /** 端口 */
@@ -20,9 +21,15 @@ type configType = {
   router: Router.IRouterOptions;
 };
 
+const getDbUrl = () => {
+  const userName = readLineSync.question("please enter db userName:");
+  const password = readLineSync.question("please enter db password:");
+  return `mongodb://${userName}:${password}@1.15.54.144:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false`;
+};
+
 const config: configType = {
   port: 3001,
-  dbUrl: "mongodb://localhost:27017",
+  dbUrl: getDbUrl(),
   db: "home",
   collections: {
     test: "test",
