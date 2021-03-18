@@ -6,6 +6,7 @@ import config from "./config/config";
 
 import connectMongo from "./mongo/connect";
 
+import InitUpload from "./controller/common/upload/upload";
 import InitHomeRouters from "./controller/home/home";
 
 const App = async () => {
@@ -13,6 +14,7 @@ const App = async () => {
   const router = new Router(config.router);
   const mongoClient = await connectMongo();
 
+  InitUpload(koa, router, mongoClient);
   InitHomeRouters(koa, router, mongoClient);
 
   koa.use(
@@ -27,9 +29,3 @@ const App = async () => {
 };
 
 App();
-
-
-
-
-
-

@@ -1,28 +1,14 @@
-import Koa from "koa";
-import Router from "koa-router";
-import { MongoClient } from "mongodb";
-
 import config from "../../config/config";
 import Validate from "../../helper/validate-value/validate-value";
 import Response from "../../base-response/base-response";
 import MongoAction from "../../mongo/action/action";
-import UploadFile from "../../common/upload-file/upload-file";
+
+import { InitRoutersType } from "../../global";
 
 import Data from "./data";
 
-import baseResponse from "../../base-response/base-response";
-
-/** 初始化 Home 的路由 */
-type InitHomeRoutersType = (
-  /** koa 实例 */
-  koa: Koa<Koa.DefaultState, Koa.DefaultContext>,
-  /** koa-router 实例 */
-  router: Router<any, {}>,
-  /** mongoDB Client */
-  client: MongoClient
-) => void;
-
-const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
+/** 初始化Home相关的路由 */
+const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.get("首页列表", "/home", async (ctx) => {
     const db = client.db(config.db);
     const collect = db.collection<Data.HomeItem>(config.collections.home);
@@ -49,19 +35,6 @@ const InitHomeRouters: InitHomeRoutersType = (koa, router, client) => {
       url,
     });
     ctx.body = Response.baseResponse(null);
-  });
-
-  router.post("上传图片", "/upload/image", async (ctx, next) => {
-    const {
-      request: { files },
-    } = ctx;
-    const data = await UploadFile(
-      files,
-      // "D:\\personal-program\\home-service\\src\\upload\\image"
-      "C:\\Users\\Administrator\\Desktop\\nginx-1.19.7\\html\\upload\\image"
-    );
-
-    ctx.body = Response.baseResponse(data.fileName);
   });
 };
 
