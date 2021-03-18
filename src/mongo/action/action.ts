@@ -1,4 +1,4 @@
-import { Collection, OptionalId } from "mongodb";
+import { Collection, InsertOneWriteOpResult, OptionalId, WithId } from "mongodb";
 
 /**
  * 向数据库添加一条数据
@@ -10,7 +10,7 @@ const insertOne = <T extends { [key: string]: any }>(
   collect: Collection<T>,
   data: OptionalId<T>
 ) => {
-  return new Promise((resove, reject) => {
+  return new Promise<InsertOneWriteOpResult<WithId<T>>>((resove, reject) => {
     collect.insertOne(data, (error, resuilt) => {
       if (Object.is(null, error)) {
         resove(resuilt);

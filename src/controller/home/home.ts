@@ -28,13 +28,13 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     }
     const db = client.db(config.db);
     const collect = db.collection<Data.HomeItem>(config.collections.home);
-    await MongoAction.insertOne<Data.HomeItem>(collect, {
+    const result = await MongoAction.insertOne<Data.HomeItem>(collect, {
       title,
       subTitle,
       image,
       url,
     });
-    ctx.body = Response.baseResponse(null);
+    ctx.body = Response.baseResponse(result);
   });
 };
 
