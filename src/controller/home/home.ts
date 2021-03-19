@@ -12,9 +12,10 @@ import Data from "./data";
 /** 初始化Home相关的路由 */
 const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.get("首页列表", "/home", async (ctx) => {
-    const { body } = ctx.request;
-    const { page, perPage } = body as { page: number; perPage: number };
-    console.log(body);
+    const { query } = ctx.request;
+    const page = Number(query.page);
+    const perPage = Number(query.perPage);
+
     const db = client.db(config.db);
     const collect = db.collection<WithId<Data.HomeItem>>(
       config.collections.home
@@ -27,7 +28,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     await collect
       .find()
       .skip((page - 1) * perPage)
-      .limit(Number(perPage))
+      .limit(perPage)
       .forEach(({ image, _id, title, subTitle, url }) =>
         list.push({
           id: _id.toHexString(),
