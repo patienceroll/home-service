@@ -13,6 +13,7 @@ import Data from "./data";
 const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.get("首页列表", "/home", async (ctx) => {
     const { body } = ctx.request;
+    const { page, perPage } = body as { page: number; perPage: number };
 
     const db = client.db(config.db);
     const collect = db.collection<WithId<Data.HomeItem>>(
@@ -23,16 +24,25 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       id: string;
     })[] = [];
 
-    await collect.find().forEach(({ image, _id, title, subTitle, url }) =>
-      list.push({
-        id: _id.toHexString(),
-        image: `http://gsea.top/${image}`,
-        url,
-        subTitle,
-        title,
-      })
-    );
-    ctx.body = Response.baseResponse(list);
+    await collect
+      .find()
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .forEach(({ image, _id, title, subTitle, url }) =>
+        list.push({
+          id: _id.toHexString(),
+          image: `http://gsea.top/${image}`,
+          url,
+          subTitle,
+          title,
+        })
+      );
+    ctx.body = Response.listResponese({
+      list,
+      page,
+      perPage,
+      total: await collect.count(),
+    });
   });
 
   router.post("新建", "/home", async (ctx, next) => {

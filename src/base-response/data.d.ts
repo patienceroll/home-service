@@ -18,12 +18,22 @@ declare namespace Responses {
     msg: string;
   };
 
-  /** 通用响应函数 */
+  /** 错误响应函数 */
   type errorResponse = <T>(
     code: ErrorCodeOptions.ErrorCode,
     data: T,
     msg?: string
   ) => ErrorResponse<T>;
+
+  type listType<T> = {
+    total: number;
+    page: number;
+    perPage: number;
+    list: T[];
+  };
+
+  /** 列表响应格式 */
+  type listResponese = <T extends listType<S>>(data: T) => BaseResponse<T>;
 }
 
 export = Responses;

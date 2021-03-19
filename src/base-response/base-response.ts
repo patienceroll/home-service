@@ -1,5 +1,6 @@
 import Responese from "./data";
 
+/** 通用响应 */
 const baseResponse: Responese.baseResponse = (data) => {
   return {
     code: 0,
@@ -8,6 +9,7 @@ const baseResponse: Responese.baseResponse = (data) => {
   };
 };
 
+/** 错误响应 */
 const errResponese: Responese.errorResponse = (
   code,
   data,
@@ -20,7 +22,17 @@ const errResponese: Responese.errorResponse = (
   };
 };
 
+/** 分页响应 */
+const listResponese: Responese.listResponese = (data) => {
+  return {
+    code: 0,
+    msg: "success",
+    data,
+  };
+};
+
 export default {
   baseResponse,
   errResponese,
+  listResponese,
 };
