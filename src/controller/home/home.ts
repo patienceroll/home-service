@@ -1,3 +1,5 @@
+import { WithId } from "mongodb";
+
 import config from "../../config/config";
 import Validate from "../../helper/validate-value/validate-value";
 import Response from "../../base-response/base-response";
@@ -10,12 +12,17 @@ import Data from "./data";
 /** 初始化Home相关的路由 */
 const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.get("首页列表", "/home", async (ctx) => {
+    const { body } = ctx.request;
+
     const db = client.db(config.db);
-    const collect = db.collection<Data.HomeItem>(config.collections.home);
-    const list: Data.HomeItem[] = [];
+    const collect = db.collection<WithId<Data.HomeItem>>(
+      config.collections.home
+    );
+    const list: (Data.HomeItem & { id: string })[] = [];
     await collect.find().forEach((item) =>
       list.push({
         ...item,
+        id: item._id.toHexString(),
         image: `http://gsea.top/${item.image}`,
       })
     );

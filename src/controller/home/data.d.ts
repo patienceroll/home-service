@@ -1,4 +1,5 @@
 declare namespace Data {
+
   /** 首页 Home 每一项基本数据 */
   interface HomeItem {
     /** 名称 */
