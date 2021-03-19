@@ -18,12 +18,18 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     const collect = db.collection<WithId<Data.HomeItem>>(
       config.collections.home
     );
-    const list: (Data.HomeItem & { id: string })[] = [];
-    await collect.find().forEach((item) =>
+
+    const list: (Data.HomeItem & {
+      id: string;
+    })[] = [];
+
+    await collect.find().forEach(({ image, _id, title, subTitle, url }) =>
       list.push({
-        ...item,
-        id: item._id.toHexString(),
-        image: `http://gsea.top/${item.image}`,
+        id: _id.toHexString(),
+        image: `http://gsea.top/${image}`,
+        url,
+        subTitle,
+        title,
       })
     );
     ctx.body = Response.baseResponse(list);
