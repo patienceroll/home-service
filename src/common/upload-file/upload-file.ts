@@ -40,7 +40,7 @@ const CreateFolder = (folderPath: string, level = 1) => {
  * @param folderPath 文件保存的路径
  * @returns
  */
-const UploadFile: UoloadImageType = (files, path = "upload\\file") => {
+const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
   const date = new Date();
   const time = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
   const folderPath = `${root + path}\\${time}`;
