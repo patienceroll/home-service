@@ -4,6 +4,7 @@ import config from "../../config/config";
 import Validate from "../../helper/validate-value/validate-value";
 import Response from "../../base-response/base-response";
 import MongoAction from "../../mongo/action/action";
+import { ErrorCodeMap } from "../../base-response/error-code";
 
 import { InitRoutersType } from "../../global";
 
@@ -49,7 +50,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       Validate.string([title, image, url]) &&
       (Validate.empty(subTitle) || Validate.string(subTitle));
     if (!validateResult) {
-      ctx.body = Response.errResponese<null>(1, null, "数据类型错误");
+      ctx.body = Response.errResponese<null>(1, null, ErrorCodeMap[1]);
       next();
     }
     const db = client.db(config.db);
@@ -70,7 +71,6 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       config.collections.home
     );
     const item = await dbHome.findOne({ _id: new ObjectId(id) });
-    console.log(item);
     if (item) {
       const { _id, image, url, subTitle, title } = item;
       ctx.body = Response.baseResponse({
@@ -81,7 +81,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
         title,
       });
     } else {
-      ctx.body = Response.errResponese(2, null, "未找到项目");
+      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
     }
   });
 };
