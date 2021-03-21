@@ -84,6 +84,24 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
     }
   });
+
+  router.put("编辑一项", "/home/:id", async (ctx, next) => {
+    const { id } = ctx.params;
+    const { title, subTitle, image, url } = ctx.request.body as Data.HomeItem;
+    const db = client.db(config.db);
+    const dbHome = db.collection<Data.HomeItem>(config.collections.home);
+    const item = await dbHome.findOne({ _id: new ObjectId(id) });
+
+    if (!item) {
+      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
+    } else {
+      const res = await dbHome.updateOne(
+        { _id: new ObjectId(id) },
+        { subTitle, title, image, url }
+      );
+      ctx.body = Response.baseResponse(res);
+    }
+  });
 };
 
 export default InitHomeRouters;
