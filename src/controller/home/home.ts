@@ -1,4 +1,4 @@
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 
 import config from "../../config/config";
 import Validate from "../../helper/validate-value/validate-value";
@@ -69,7 +69,8 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     const dbHome = db.collection<WithId<Data.HomeItem>>(
       config.collections.home
     );
-    const item = await dbHome.findOne({ _id: id });
+    const item = await dbHome.findOne({ _id: new ObjectId(id) });
+    console.log(item);
     if (item) {
       const { _id, image, url, subTitle, title } = item;
       ctx.body = Response.baseResponse({
