@@ -35,7 +35,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       .forEach(({ image, _id, title, subTitle, url }) =>
         list.push({
           id: _id.toHexString(),
-          image: `/${image}`,
+          image,
           url,
           subTitle,
           title,
@@ -75,7 +75,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       const { _id, image, url, subTitle, title } = item;
       ctx.body = Response.baseResponse({
         id: _id.toHexString(),
-        image: `/${image}`,
+        image,
         url,
         subTitle,
         title,
