@@ -17,15 +17,17 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     const perPage = Number(query.perPage);
 
     const db = client.db(config.db);
-    const collect = db.collection<WithId<Data.HomeItem>>(
+    const dbHome = db.collection<WithId<Data.HomeItem>>(
       config.collections.home
     );
+
+    const total = await dbHome.count();
 
     const list: (Data.HomeItem & {
       id: string;
     })[] = [];
 
-    await collect
+    await dbHome
       .find()
       .skip((page - 1) * perPage)
       .limit(perPage)
@@ -38,12 +40,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
           title,
         })
       );
-    ctx.body = Response.listResponese({
-      list,
-      page,
-      perPage,
-      total: await collect.count(),
-    });
+    ctx.body = Response.listResponese({ list, page, perPage, total });
   });
 
   router.post("新建", "/home", async (ctx, next) => {
@@ -56,14 +53,35 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       next();
     }
     const db = client.db(config.db);
-    const collect = db.collection<Data.HomeItem>(config.collections.home);
-    const result = await MongoAction.insertOne<Data.HomeItem>(collect, {
+    const dbHome = db.collection<Data.HomeItem>(config.collections.home);
+    const result = await MongoAction.insertOne<Data.HomeItem>(dbHome, {
       title,
       subTitle,
       image,
       url,
     });
     ctx.body = Response.baseResponse(result);
+  });
+
+  router.get("获取一项", "/home/:id", async (ctx, next) => {
+    const { id } = ctx.params;
+    const db = client.db(config.db);
+    const dbHome = db.collection<WithId<Data.HomeItem>>(
+      config.collections.home
+    );
+    const item = await dbHome.findOne({ _id: id });
+    if (item) {
+      const { _id, image, url, subTitle, title } = item;
+      ctx.body = Response.baseResponse({
+        id: _id.toHexString(),
+        image: `http://gsea.top/${image}`,
+        url,
+        subTitle,
+        title,
+      });
+    } else {
+      ctx.body = Response.errResponese(2, null, "未找到项目");
+    }
   });
 };
 
