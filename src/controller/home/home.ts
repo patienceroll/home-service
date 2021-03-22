@@ -95,7 +95,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     if (!item) {
       ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
     } else {
-      const res = await dbHome.updateOne(
+      await dbHome.updateOne(
         { _id: new ObjectId(id) },
         { $set: { subTitle, title, image, url } }
       );
