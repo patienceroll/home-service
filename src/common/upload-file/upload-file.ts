@@ -58,7 +58,7 @@ const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
         const fileWrite = fs.createWriteStream(filePath);
         fileReader.pipe(fileWrite);
         FileNames.push(`${+date}-${fileItem.name}`);
-        filePathes.push(`${path}\\${+date}-${fileItem.name}`);
+        filePathes.push(`${path}/${time}/${+date}-${fileItem.name}`);
       });
       resolve({
         fileName: FileNames,
@@ -73,7 +73,7 @@ const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
       fileReader.pipe(fileWrite);
       resolve({
         fileName: `${+date}-${file.name}`,
-        filePath: `${path}\\${+date}-${file.name}`,
+        filePath: `${path}/${time}/${+date}-${file.name}`,
       });
     }
   });
