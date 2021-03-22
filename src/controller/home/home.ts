@@ -61,7 +61,13 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       image,
       url,
     });
-    ctx.body = Response.baseResponse(result);
+    ctx.body = Response.baseResponse({
+      id: result.insertedId.toHexString(),
+      title,
+      subTitle,
+      image,
+      url,
+    });
   });
 
   router.get("获取一项", "/home/:id", async (ctx, next) => {
