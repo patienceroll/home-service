@@ -3,7 +3,7 @@ import { ObjectId, WithId } from "mongodb";
 import config from "src/config/config";
 import * as Validate from "src/helper/validate-value/validate-value";
 import Response from "src/base-response/base-response";
-import MongoAction from "src/mongo/action/action";
+import { InsertOne } from "src/mongo/action/action";
 
 import { ErrorCodeMap } from "src/base-response/error-code";
 
@@ -45,18 +45,18 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     ctx.body = Response.listResponese({ list, page, perPage, total });
   });
 
-  router.post("新建", "/home", async (ctx, next) => {
+  router.post("新建", "/home", async (ctx) => {
     const { title, subTitle, image, url } = ctx.request.body as Data.HomeItem;
     const validateResult =
       Validate.isString([title, image, url]) &&
       (Validate.isEmpty(subTitle) || Validate.isString(subTitle));
     if (!validateResult) {
       ctx.body = Response.errResponese<null>(1, null, ErrorCodeMap[1]);
-      next();
+      return;
     }
     const db = client.db(config.db);
     const dbHome = db.collection<Data.HomeItem>(config.collections.home);
-    const result = await MongoAction.insertOne<Data.HomeItem>(dbHome, {
+    const result = await InsertOne<Data.HomeItem>(dbHome, {
       title,
       subTitle,
       image,
@@ -71,7 +71,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     });
   });
 
-  router.get("获取一项", "/home/:id", async (ctx, next) => {
+  router.get("获取一项", "/home/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
     const dbHome = db.collection<WithId<Data.HomeItem>>(

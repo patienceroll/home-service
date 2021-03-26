@@ -6,7 +6,7 @@ import { Collection, InsertOneWriteOpResult, OptionalId, WithId } from "mongodb"
  * @param data 添加的数据
  *
  */
-const insertOne = <T extends { [key: string]: any }>(
+export const InsertOne = <T extends { [key: string]: any }>(
   collect: Collection<T>,
   data: OptionalId<T>
 ) => {
@@ -22,5 +22,5 @@ const insertOne = <T extends { [key: string]: any }>(
 };
 
 export default {
-  insertOne,
+  InsertOne,
 };
