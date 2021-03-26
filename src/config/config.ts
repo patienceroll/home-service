@@ -10,12 +10,12 @@ type configType = {
   db: string;
   /** 集合 */
   collections: {
-    /** 测试集合 */
-    test: "test";
     /** 用户 */
     users: "users";
     /** home 页面数据 */
     home: "home";
+    /** 相册 */
+    photo: "photo";
   };
   /** router 配置 */
   router: Router.IRouterOptions;
@@ -34,9 +34,9 @@ const config: configType = {
   dbUrl: getDbUrl(),
   db: "home",
   collections: {
-    test: "test",
     users: "users",
     home: "home",
+    photo: "photo",
   },
   router: {
     prefix: "/api/v1",

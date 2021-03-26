@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./src/app.ts",
+    "start": "ts-node -r tsconfig-paths/register ./src/app.ts --files",
     "commit": "cz"
   },
   "dependencies": {
@@ -27,6 +27,7 @@
     "commitizen": "^4.2.3",
     "cz-conventional-changelog": "3.3.0",
     "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   },
   "config": {

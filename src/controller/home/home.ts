@@ -1,12 +1,13 @@
 import { ObjectId, WithId } from "mongodb";
 
-import config from "../../config/config";
-import Validate from "../../helper/validate-value/validate-value";
-import Response from "../../base-response/base-response";
-import MongoAction from "../../mongo/action/action";
-import { ErrorCodeMap } from "../../base-response/error-code";
+import config from "src/config/config";
+import * as Validate from "src/helper/validate-value/validate-value";
+import Response from "src/base-response/base-response";
+import MongoAction from "src/mongo/action/action";
 
-import { InitRoutersType } from "../../global";
+import { ErrorCodeMap } from "src/base-response/error-code";
+
+import type { InitRoutersType } from "src/global";
 
 import Data from "./data";
 
@@ -47,8 +48,8 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.post("新建", "/home", async (ctx, next) => {
     const { title, subTitle, image, url } = ctx.request.body as Data.HomeItem;
     const validateResult =
-      Validate.string([title, image, url]) &&
-      (Validate.empty(subTitle) || Validate.string(subTitle));
+      Validate.isString([title, image, url]) &&
+      (Validate.isEmpty(subTitle) || Validate.isString(subTitle));
     if (!validateResult) {
       ctx.body = Response.errResponese<null>(1, null, ErrorCodeMap[1]);
       next();

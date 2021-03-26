@@ -1,4 +1,4 @@
-import { InitRoutersType } from "../../../global";
+import type { InitRoutersType } from "../../../global";
 
 import UploadFile from "../../../common/upload-file/upload-file";
 import Response from "../../../base-response/base-response";

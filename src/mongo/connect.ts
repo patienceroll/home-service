@@ -1,6 +1,5 @@
 import { MongoClient } from "mongodb";
 
-
 import config from "../config/config";
 
 type ConnectMongoType = () => Promise<MongoClient>;

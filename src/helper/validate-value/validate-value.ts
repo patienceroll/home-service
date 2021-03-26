@@ -1,10 +1,8 @@
-import ValidateDataType from "./data";
-
 /**
  * 校验是否是字符串
  * @param strings 校验是否是 string,sting[]类型的数据
  */
-const string: ValidateDataType.ValidateString = (strings) => {
+export const isString = (strings: any) => {
   if (typeof strings === "string") return true;
   if (
     Array.isArray(strings) &&
@@ -19,7 +17,7 @@ const string: ValidateDataType.ValidateString = (strings) => {
  * 校验是否是数字
  * @param strings 校验是否是 string,sting[]类型的数据
  */
-const number: ValidateDataType.ValidateString = (strings) => {
+export const isNumber = (strings: any) => {
   if (typeof strings === "number") return true;
   if (
     Array.isArray(strings) &&
@@ -31,7 +29,7 @@ const number: ValidateDataType.ValidateString = (strings) => {
 };
 
 /** 校验是否是undefined或null */
-const empty: ValidateDataType.ValidateEmpty = (value) => {
+export const isEmpty = (value: any) => {
   if (Object.is(value, null) || Object.is(value, undefined)) return true;
   if (
     Array.isArray(value) &&
@@ -40,10 +38,4 @@ const empty: ValidateDataType.ValidateEmpty = (value) => {
   )
     return true;
   return false;
-};
-
-export default {
-  string,
-  empty,
-  number,
 };
