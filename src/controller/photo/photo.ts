@@ -1,4 +1,3 @@
-import config from "src/config/config";
 import { ObjectId, WithId } from "mongodb";
 
 import Response from "src/base-response/base-response";
@@ -6,10 +5,10 @@ import * as Validate from "src/helper/validate-value/validate-value";
 import { InsertOne } from "src/mongo/action/action";
 
 import { ErrorCodeMap } from "src/base-response/error-code";
+import config from "src/config/config";
 
 import type { InitRoutersType } from "src/global";
 import type * as Data from "./data";
-import Router from "koa-router";
 
 const { listResponese, baseResponse, errResponese } = Response;
 const { isString } = Validate;
