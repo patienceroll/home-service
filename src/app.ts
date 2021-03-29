@@ -2,12 +2,13 @@ import Koa from "koa";
 import Router from "koa-router";
 import KoaBody from "koa-body";
 
-import config from "./config/config";
+import config from "src/config/config";
 
-import connectMongo from "./mongo/connect";
+import connectMongo from "src/mongo/connect";
 
-import InitUpload from "./controller/common/upload/upload";
-import InitHomeRouters from "./controller/home/home";
+import InitUpload from "src/controller/common/upload/upload";
+import InitHomeRouters from "src/controller/home/home";
+import InitPhotoRouters from "src/controller/photo/photo";
 
 const App = async () => {
   const koa = new Koa();
@@ -16,6 +17,7 @@ const App = async () => {
 
   InitUpload(koa, router, mongoClient);
   InitHomeRouters(koa, router, mongoClient);
+  InitPhotoRouters(koa, router, mongoClient);
 
   koa.use(
     KoaBody({
