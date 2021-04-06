@@ -109,6 +109,20 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       ctx.body = Response.baseResponse({ subTitle, title, image, url, id });
     }
   });
+
+  router.delete("删除home", "/home/:id", async (ctx) => {
+    const { id } = ctx.params;
+    const db = client.db(config.db);
+    const dbHome = db.collection<WithId<Data.HomeItem>>(
+      config.collections.home
+    );
+    const result = await dbHome.deleteOne({ _id: new ObjectId(id) });
+    if (result.result.ok) {
+      ctx.body = Response.baseResponse(null);
+    } else {
+      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
+    }
+  });
 };
 
 export default InitHomeRouters;
