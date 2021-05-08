@@ -54,12 +54,12 @@ const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
       file.forEach((fileItem) => {
         const fileReader = fs.createReadStream(fileItem.path);
         CreateFolder(folderPath);
-        const filePath = `${folderPath}\\${+date}-${fileItem.name}`;
+        const filePath = `${folderPath}\\${fileItem.name}-${+date}`;
         const fileWrite = fs.createWriteStream(filePath);
         fileReader.pipe(fileWrite);
-        FileNames.push(`${+date}-${fileItem.name}`);
+        FileNames.push(`${fileItem.name}-${+date}`);
         filePathes.push(
-          `${path.replace(/\\/g, "/")}/${time}/${+date}-${fileItem.name}`
+          `${path.replace(/\\/g, "/")}/${time}/${fileItem.name}-${+date}`
         );
       });
       resolve({
@@ -70,12 +70,12 @@ const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
       // 如果是单个文件
       const fileReader = fs.createReadStream(file.path);
       CreateFolder(folderPath);
-      const filePath = `${folderPath}\\${+date}-${file.name}`;
+      const filePath = `${folderPath}\\${file.name}-${+date}`;
       const fileWrite = fs.createWriteStream(filePath);
       fileReader.pipe(fileWrite);
       resolve({
-        fileName: `${+date}-${file.name}`,
-        filePath: `${path.replace(/\\/g, "/")}/${time}/${+date}-${file.name}`,
+        fileName: `${file.name}-${+date}`,
+        filePath: `${path.replace(/\\/g, "/")}/${time}/${file.name}-${+date}`,
       });
     }
   });
