@@ -34,6 +34,13 @@ const CreateFolder = (folderPath: string, level = 1) => {
   }
 };
 
+/** 给文件名加上随机后缀 */
+const addSufix = (filename: string, sufix: string | number) => {
+  const splitNameArray = filename.split(".");
+  splitNameArray.splice(splitNameArray.length - 1, 0, String(sufix));
+  return splitNameArray.join(".");
+};
+
 /**
  *
  * @param files 上传的文件对象
@@ -54,13 +61,12 @@ const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
       file.forEach((fileItem) => {
         const fileReader = fs.createReadStream(fileItem.path);
         CreateFolder(folderPath);
-        const filePath = `${folderPath}\\${fileItem.name}-${+date}`;
+        const fileName = addSufix(fileItem.name, +date);
+        const filePath = `${folderPath}\\${fileName}`;
         const fileWrite = fs.createWriteStream(filePath);
         fileReader.pipe(fileWrite);
-        FileNames.push(`${fileItem.name}-${+date}`);
-        filePathes.push(
-          `${path.replace(/\\/g, "/")}/${time}/${fileItem.name}-${+date}`
-        );
+        FileNames.push(fileName);
+        filePathes.push(`${path.replace(/\\/g, "/")}/${time}/${fileName}`);
       });
       resolve({
         fileName: FileNames,
@@ -70,12 +76,13 @@ const UploadFile: UoloadImageType = (files, path = "\\upload\\file") => {
       // 如果是单个文件
       const fileReader = fs.createReadStream(file.path);
       CreateFolder(folderPath);
-      const filePath = `${folderPath}\\${file.name}-${+date}`;
+      const fileName = addSufix(file.name, +date);
+      const filePath = `${folderPath}\\${fileName}`;
       const fileWrite = fs.createWriteStream(filePath);
       fileReader.pipe(fileWrite);
       resolve({
-        fileName: `${file.name}-${+date}`,
-        filePath: `${path.replace(/\\/g, "/")}/${time}/${file.name}-${+date}`,
+        fileName: `${fileName}`,
+        filePath: `${path.replace(/\\/g, "/")}/${time}/${fileName}`,
       });
     }
   });
