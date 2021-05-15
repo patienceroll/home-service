@@ -117,12 +117,12 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
           $gt: _id,
         },
       })
-      .sort({ _id: -1 })
+      .sort({ _id: 1 })
       .limit(1)
       .toArray();
     const [next] = await dbPhoto
       .find({ _id: { $lt: _id } })
-      .sort({ _id: 1 })
+      .sort({ _id: -1 })
       .limit(1)
       .toArray();
 
