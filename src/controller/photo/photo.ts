@@ -109,14 +109,33 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
     const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
-    const item = await dbPhoto.findOne({ _id: new ObjectId(id) });
+    const _id = new ObjectId(id);
+    const item = await dbPhoto.findOne({ _id });
+    const [previous] = await dbPhoto
+      .find({ _id })
+      .sort({ _id: -1 })
+      .limit(1)
+      .toArray();
+    const [next] = await dbPhoto
+      .find({ _id })
+      .sort({ _id: 1 })
+      .limit(1)
+      .toArray();
 
     if (!item) {
       ctx.body = errResponese(2, null, ErrorCodeMap[2]);
     } else {
+      const { content, cover, describe, title, date, _id } = item;
+
       ctx.body = baseResponse<ReturnWithId<PhotoDetail>>({
-        ...item,
-        id: item._id.toHexString(),
+        id: _id.toHexString(),
+        content,
+        cover,
+        describe,
+        title,
+        date,
+        previousId: previous ? previous._id.toHexString() : null,
+        nextId: next ? next._id.toHexString() : null,
       });
     }
   });

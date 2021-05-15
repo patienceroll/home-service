@@ -12,4 +12,9 @@ export type Photo = {
   content: string;
 };
 
-type PhotoDetail = Photo 
+type PhotoDetail = Photo & {
+  /** 上一个数据的 id */
+  previousId: string | null;
+  /** 下一个数据的id */
+  nextId: string | null;
+};
