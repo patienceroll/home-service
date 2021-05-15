@@ -2,7 +2,11 @@ import { ObjectId, WithId } from "mongodb";
 
 import config from "src/config/config";
 import * as Validate from "src/helper/validate-value/validate-value";
-import Response from "src/base-response/base-response";
+import {
+  baseResponse,
+  listResponese,
+  errResponese,
+} from "src/base-response/base-response";
 import { InsertOne } from "src/mongo/action/action";
 
 import { ErrorCodeMap } from "src/base-response/error-code";
@@ -42,7 +46,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
           title,
         })
       );
-    ctx.body = Response.listResponese({ list, page, perPage, total });
+    ctx.body = listResponese({ list, page, perPage, total });
   });
 
   router.post("新建", "/home", async (ctx) => {
@@ -51,7 +55,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       Validate.isString([title, image, url]) &&
       (Validate.isEmpty(subTitle) || Validate.isString(subTitle));
     if (!validateResult) {
-      ctx.body = Response.errResponese<null>(1, null, ErrorCodeMap[1]);
+      ctx.body = errResponese<null>(1, null, ErrorCodeMap[1]);
       return;
     }
     const db = client.db(config.db);
@@ -62,7 +66,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       image,
       url,
     });
-    ctx.body = Response.baseResponse({
+    ctx.body = baseResponse({
       id: result.insertedId.toHexString(),
       title,
       subTitle,
@@ -80,7 +84,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     const item = await dbHome.findOne({ _id: new ObjectId(id) });
     if (item) {
       const { _id, image, url, subTitle, title } = item;
-      ctx.body = Response.baseResponse({
+      ctx.body = baseResponse({
         id: _id.toHexString(),
         image,
         url,
@@ -88,7 +92,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
         title,
       });
     } else {
-      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
     }
   });
 
@@ -100,13 +104,13 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     const item = await dbHome.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
-      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
     } else {
       await dbHome.updateOne(
         { _id: new ObjectId(id) },
         { $set: { subTitle, title, image, url } }
       );
-      ctx.body = Response.baseResponse({ subTitle, title, image, url, id });
+      ctx.body = baseResponse({ subTitle, title, image, url, id });
     }
   });
 
@@ -118,9 +122,9 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     );
     const result = await dbHome.deleteOne({ _id: new ObjectId(id) });
     if (result.result.ok) {
-      ctx.body = Response.baseResponse(null);
+      ctx.body = baseResponse(null);
     } else {
-      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
     }
   });
 };

@@ -1,7 +1,7 @@
 import type { InitRoutersType } from "../../../global";
 
 import UploadFile from "../../../common/upload-file/upload-file";
-import Response from "../../../base-response/base-response";
+import { baseResponse } from "../../../base-response/base-response";
 
 /** 初始化上传文件router */
 const InitUploadRouter: InitRoutersType = (koa, router, client) => {
@@ -11,7 +11,7 @@ const InitUploadRouter: InitRoutersType = (koa, router, client) => {
     } = ctx;
     const data = await UploadFile(files, "\\upload\\image");
 
-    ctx.body = Response.baseResponse({
+    ctx.body = baseResponse({
       fileName: data.fileName,
       filePath: data.filePath,
     });

@@ -1,6 +1,12 @@
 import { ObjectId, WithId } from "mongodb";
 
-import Response from "src/base-response/base-response";
+import {
+  baseResponse,
+  errResponese,
+  listResponese,
+} from "src/base-response/base-response";
+import type { ReturnWithId } from "src/base-response/base-response";
+
 import * as Validate from "src/helper/validate-value/validate-value";
 import { InsertOne } from "src/mongo/action/action";
 
@@ -8,9 +14,8 @@ import { ErrorCodeMap } from "src/base-response/error-code";
 import config from "src/config/config";
 
 import type { InitRoutersType } from "src/global";
-import type * as Data from "./data";
+import type { Photo, PhotoDetail } from "./data";
 
-const { listResponese, baseResponse, errResponese } = Response;
 const { isString } = Validate;
 
 /** 初始化Photo相关的路由 */
@@ -20,16 +25,16 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     const page = Number(query.page);
     const perPage = Number(query.perPage);
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Data.Photo>>(config.collections.photo);
+    const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
 
     const total = await dbPhoto.count();
-    const list: (Omit<Data.Photo, "content"> & { id: string })[] = [];
+    const list: (Omit<Photo, "content"> & { id: string })[] = [];
 
     await dbPhoto
       .find()
       .skip((page - 1) * perPage)
       .limit(perPage)
-      .forEach(({ title, date, cover, describe, content, _id }) => {
+      .forEach(({ title, date, cover, describe, _id }) => {
         list.push({
           title,
           date,
@@ -43,8 +48,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
   });
 
   router.post("新建相册", "/photo", async (ctx) => {
-    const { title, date, cover, describe, content } = ctx.request
-      .body as Data.Photo;
+    const { title, date, cover, describe, content } = ctx.request.body as Photo;
 
     if (!isString([title, date, cover, describe, content])) {
       ctx.body = errResponese<null>(1, null, ErrorCodeMap[1]);
@@ -54,7 +58,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     const db = client.db(config.db);
     const dbPhoto = db.collection(config.collections.photo);
 
-    const result = await InsertOne<Data.Photo>(dbPhoto, {
+    const result = await InsertOne<Photo>(dbPhoto, {
       title,
       date,
       cover,
@@ -74,8 +78,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
 
   router.put("编辑相册", "/photo/:id", async (ctx, next) => {
     const { id } = ctx.params;
-    const { title, date, cover, describe, content } = ctx.request
-      .body as Data.Photo;
+    const { title, date, cover, describe, content } = ctx.request.body as Photo;
     const db = client.db(config.db);
     const dbPhoto = db.collection(config.collections.photo);
     const item = await dbPhoto.findOne({ _id: new ObjectId(id) });
@@ -105,32 +108,38 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
   router.get("获取相册详情", "/photo/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Data.Photo>>(config.collections.photo);
-    const item = await dbPhoto.findOne({ _id: new ObjectId(id) });
-    if (item) {
-      const { _id, content, cover, date, describe, title } = item;
-      ctx.body = Response.baseResponse({
+    const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
+    const item = await dbPhoto.find({ _id: new ObjectId(id) });
+    const array = await item.toArray();
+
+    if (array.length === 0) {
+      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+    } else {
+      const [{ content, cover, describe, title, date, _id }] = array;
+      const previous = await item.sort({ _id: -1 }).limit(1).toArray();
+      const next = await item.sort({ _id: 1 }).limit(1).toArray();
+      ctx.body = baseResponse<ReturnWithId<PhotoDetail>>({
         id: _id.toHexString(),
         content,
         cover,
         describe,
         title,
         date,
+        nextId: next.length === 0 ? null : next[0]._id.toHexString(),
+        previousId: previous.length === 0 ? null : next[0]._id.toHexString(),
       });
-    } else {
-      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
     }
   });
 
   router.delete("删除相册", "/photo/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Data.Photo>>(config.collections.photo);
+    const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
     const result = await dbPhoto.deleteOne({ _id: new ObjectId(id) });
     if (result.result.ok) {
-      ctx.body = Response.baseResponse(null);
+      ctx.body = baseResponse(null);
     } else {
-      ctx.body = Response.errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
     }
   });
 };

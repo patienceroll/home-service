@@ -1,38 +1,31 @@
-import Responese from "./data";
+import type { ErrorCode } from "./error-code";
+
+export type ReturnWithId<T extends Record<string, any>> = Omit<T, "id"> & {
+  id: string;
+};
 
 /** 通用响应 */
-const baseResponse: Responese.baseResponse = (data) => {
-  return {
-    code: 0,
-    data,
-    msg: "success",
-  };
-};
+export const baseResponse = <T = null>(data: T) => ({
+  code: 0,
+  data,
+  msg: "success",
+});
 
 /** 错误响应 */
-const errResponese: Responese.errorResponse = (
-  code,
-  data,
+export const errResponese = <T = null>(
+  code: ErrorCode,
+  data: T,
   msg = "未知异常"
-) => {
-  return {
-    data,
-    code,
-    msg,
-  };
-};
+) => ({ code, data, msg });
 
 /** 分页响应 */
-const listResponese: Responese.listResponese = (data) => {
-  return {
-    code: 0,
-    msg: "success",
-    data,
-  };
-};
-
-export default {
-  baseResponse,
-  errResponese,
-  listResponese,
-};
+export const listResponese = <T = null>(data: {
+  page: number;
+  perPage: number;
+  total: number;
+  list: T[];
+}) => ({
+  code: 0,
+  data,
+  msg: "success",
+});
