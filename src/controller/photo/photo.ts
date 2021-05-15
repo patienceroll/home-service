@@ -35,7 +35,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
       .skip((page - 1) * perPage)
       .limit(perPage)
       .forEach(({ title, date, cover, describe, _id }) => {
-        list.push({
+        list.unshift({
           title,
           date,
           cover,

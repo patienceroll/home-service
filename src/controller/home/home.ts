@@ -38,7 +38,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       .skip((page - 1) * perPage)
       .limit(perPage)
       .forEach(({ image, _id, title, subTitle, url }) =>
-        list.push({
+        list.unshift({
           id: _id.toHexString(),
           image,
           url,
