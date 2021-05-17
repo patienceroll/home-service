@@ -27,7 +27,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       config.collections.home
     );
 
-    const total = await dbHome.count();
+    const total = await dbHome.countDocuments();
 
     const list: (Data.HomeItem & {
       id: string;

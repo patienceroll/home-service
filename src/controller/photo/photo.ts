@@ -27,7 +27,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     const db = client.db(config.db);
     const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
 
-    const total = await dbPhoto.count();
+    const total = await dbPhoto.countDocuments();
     const list: (Omit<Photo, "content"> & { id: string })[] = [];
 
     await dbPhoto
@@ -35,6 +35,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
       .skip((page - 1) * perPage)
       .limit(perPage)
       .forEach(({ title, date, cover, describe, _id }) => {
+        // 列表按照后添加的放到最前
         list.unshift({
           title,
           date,
@@ -111,18 +112,20 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
     const _id = new ObjectId(id);
     const item = await dbPhoto.findOne({ _id });
-    const [previous] = await dbPhoto
+    // 因为列表是新数据在最前面,即 ObjectId 小的在最后
+    // 所以此处 id 更小的为 next
+    const [next] = await dbPhoto
       .find({
         _id: {
-          $gt: _id,
+          $lt: _id,
         },
       })
-      // .sort({ _id: 1 })
+      .sort({ _id: -1 })
       .limit(1)
       .toArray();
-    const [next] = await dbPhoto
-      .find({ _id: { $lt: _id } })
-      // .sort({ _id: 1 })
+    const [previous] = await dbPhoto
+      .find({ _id: { $gt: _id } })
+      .sort({ _id: 1 })
       .limit(1)
       .toArray();
 
