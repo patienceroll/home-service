@@ -16,24 +16,24 @@ import type { InitRoutersType } from "src/global";
 import Data from "./data";
 
 /** 初始化项目相关的路由 */
-const InitHomeRouters: InitRoutersType = (koa, router, client) => {
+const InitProjectRouters: InitRoutersType = (koa, router, client) => {
   router.get("项目列表", "/project", async (ctx) => {
     const { query } = ctx.request;
     const page = Number(query.page);
     const perPage = Number(query.perPage);
 
     const db = client.db(config.db);
-    const dbHome = db.collection<WithId<Data.ProjectItem>>(
+    const dbProject = db.collection<WithId<Data.ProjectItem>>(
       config.collections.project
     );
 
-    const total = await dbHome.countDocuments();
+    const total = await dbProject.countDocuments();
 
     const list: (Data.ProjectItem & {
       id: string;
     })[] = [];
 
-    await dbHome
+    await dbProject
       .find()
       .skip((page - 1) * perPage)
       .limit(perPage)
@@ -60,8 +60,8 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       return;
     }
     const db = client.db(config.db);
-    const dbHome = db.collection<Data.ProjectItem>(config.collections.project);
-    const result = await InsertOne<Data.ProjectItem>(dbHome, {
+    const dbProject = db.collection<Data.ProjectItem>(config.collections.project);
+    const result = await InsertOne<Data.ProjectItem>(dbProject, {
       title,
       subTitle,
       image,
@@ -79,10 +79,10 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.get("获取项目详情", "/project/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbHome = db.collection<WithId<Data.ProjectItem>>(
+    const dbProject = db.collection<WithId<Data.ProjectItem>>(
       config.collections.project
     );
-    const item = await dbHome.findOne({ _id: new ObjectId(id) });
+    const item = await dbProject.findOne({ _id: new ObjectId(id) });
     if (item) {
       const { _id, image, url, subTitle, title } = item;
       ctx.body = baseResponse({
@@ -102,13 +102,13 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     const { title, subTitle, image, url } = ctx.request
       .body as Data.ProjectItem;
     const db = client.db(config.db);
-    const dbHome = db.collection<Data.ProjectItem>(config.collections.project);
-    const item = await dbHome.findOne({ _id: new ObjectId(id) });
+    const dbProject = db.collection<Data.ProjectItem>(config.collections.project);
+    const item = await dbProject.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
       ctx.body = errResponese(2, null, ErrorCodeMap[2]);
     } else {
-      await dbHome.updateOne(
+      await dbProject.updateOne(
         { _id: new ObjectId(id) },
         { $set: { subTitle, title, image, url } }
       );
@@ -119,10 +119,10 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   router.delete("删除项目", "/project/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbHome = db.collection<WithId<Data.ProjectItem>>(
+    const dbProject = db.collection<WithId<Data.ProjectItem>>(
       config.collections.project
     );
-    const result = await dbHome.deleteOne({ _id: new ObjectId(id) });
+    const result = await dbProject.deleteOne({ _id: new ObjectId(id) });
     if (result.result.ok) {
       ctx.body = baseResponse(null);
     } else {
@@ -131,4 +131,4 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
   });
 };
 
-export default InitHomeRouters;
+export default InitProjectRouters;

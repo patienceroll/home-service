@@ -19,18 +19,18 @@ import type { Note, NoteDetail } from "./data";
 const { isString } = Validate;
 
 /** 初始化Photo相关的路由 */
-const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
+const InitNotesRouters: InitRoutersType = (koa, router, client) => {
   router.get("随记列表", "/notes", async (ctx) => {
     const { query } = ctx.request;
     const page = Number(query.page);
     const perPage = Number(query.perPage);
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
+    const dbNotes = db.collection<WithId<Note>>(config.collections.notes);
 
-    const total = await dbPhoto.countDocuments();
+    const total = await dbNotes.countDocuments();
     const list: (Omit<Note, "content"> & { id: string })[] = [];
 
-    await dbPhoto
+    await dbNotes
       .find()
       .skip((page - 1) * perPage)
       .limit(perPage)
@@ -57,9 +57,9 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     }
 
     const db = client.db(config.db);
-    const dbPhoto = db.collection(config.collections.notes);
+    const dbNotes = db.collection(config.collections.notes);
 
-    const result = await InsertOne<Note>(dbPhoto, {
+    const result = await InsertOne<Note>(dbNotes, {
       title,
       date,
       cover,
@@ -81,14 +81,14 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     const { id } = ctx.params;
     const { title, date, cover, describe, content } = ctx.request.body as Note;
     const db = client.db(config.db);
-    const dbPhoto = db.collection(config.collections.notes);
-    const item = await dbPhoto.findOne({ _id: new ObjectId(id) });
+    const dbNotes = db.collection(config.collections.notes);
+    const item = await dbNotes.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
       ctx.body = errResponese(2, null, ErrorCodeMap[2]);
       return;
     } else {
-      await dbPhoto.updateOne(
+      await dbNotes.updateOne(
         { _id: new ObjectId(id) },
         {
           $set: { title, date, cover, describe, content },
@@ -109,12 +109,12 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
   router.get("获取随记详情", "/notes/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
+    const dbNotes = db.collection<WithId<Note>>(config.collections.notes);
     const _id = new ObjectId(id);
-    const item = await dbPhoto.findOne({ _id });
+    const item = await dbNotes.findOne({ _id });
     // 因为列表是新数据在最前面,即 ObjectId 小的在最后
     // 所以此处 id 更小的为 next
-    const [next] = await dbPhoto
+    const [next] = await dbNotes
       .find({
         _id: {
           $lt: _id,
@@ -123,7 +123,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
       .sort({ _id: -1 })
       .limit(1)
       .toArray();
-    const [previous] = await dbPhoto
+    const [previous] = await dbNotes
       .find({ _id: { $gt: _id } })
       .sort({ _id: 1 })
       .limit(1)
@@ -150,8 +150,8 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
   router.delete("删除随记", "/notes/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
-    const result = await dbPhoto.deleteOne({ _id: new ObjectId(id) });
+    const dbNotes = db.collection<WithId<Note>>(config.collections.notes);
+    const result = await dbNotes.deleteOne({ _id: new ObjectId(id) });
     if (result.result.ok) {
       ctx.body = baseResponse(null);
     } else {
@@ -160,4 +160,4 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
   });
 };
 
-export default InitPhotoRouters;
+export default InitNotesRouters;
