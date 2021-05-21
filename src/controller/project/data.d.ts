@@ -1,7 +1,6 @@
 declare namespace Data {
-
   /** 首页 Home 每一项基本数据 */
-  interface HomeItem {
+  interface ProjectItem {
     /** 名称 */
     title: string;
     /** 子名称 */
@@ -12,6 +11,5 @@ declare namespace Data {
     image: string;
   }
 }
-
 
 export = Data;

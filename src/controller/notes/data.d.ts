@@ -1,5 +1,5 @@
 /** 相册单项数据 */
-export type Photo = {
+export type Note = {
   /** 标题 */
   title: string;
   /** 日期 */
@@ -12,7 +12,7 @@ export type Photo = {
   content: string;
 };
 
-type PhotoDetail = Photo & {
+type NoteDetail = Note & {
   /** 上一个数据的 id */
   previousId: string | null;
   /** 下一个数据的id */

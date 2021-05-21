@@ -7,8 +7,8 @@ import config from "src/config/config";
 import connectMongo from "src/mongo/connect";
 
 import InitUpload from "src/controller/common/upload/upload";
-import InitHomeRouters from "src/controller/home/home";
-import InitPhotoRouters from "src/controller/photo/photo";
+import InitHomeRouters from "src/controller/project";
+import InitPhotoRouters from "src/controller/notes";
 
 const App = async () => {
   const koa = new Koa();

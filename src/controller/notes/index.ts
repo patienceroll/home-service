@@ -14,21 +14,21 @@ import { ErrorCodeMap } from "src/base-response/error-code";
 import config from "src/config/config";
 
 import type { InitRoutersType } from "src/global";
-import type { Photo, PhotoDetail } from "./data";
+import type { Note, NoteDetail } from "./data";
 
 const { isString } = Validate;
 
 /** 初始化Photo相关的路由 */
 const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
-  router.get("相册列表", "/photo", async (ctx) => {
+  router.get("相册列表", "/notes", async (ctx) => {
     const { query } = ctx.request;
     const page = Number(query.page);
     const perPage = Number(query.perPage);
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
+    const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
 
     const total = await dbPhoto.countDocuments();
-    const list: (Omit<Photo, "content"> & { id: string })[] = [];
+    const list: (Omit<Note, "content"> & { id: string })[] = [];
 
     await dbPhoto
       .find()
@@ -48,8 +48,8 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     ctx.body = listResponese({ list, page, perPage, total });
   });
 
-  router.post("新建相册", "/photo", async (ctx) => {
-    const { title, date, cover, describe, content } = ctx.request.body as Photo;
+  router.post("新建相册", "/notes", async (ctx) => {
+    const { title, date, cover, describe, content } = ctx.request.body as Note;
 
     if (!isString([title, date, cover, describe, content])) {
       ctx.body = errResponese<null>(1, null, ErrorCodeMap[1]);
@@ -57,9 +57,9 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     }
 
     const db = client.db(config.db);
-    const dbPhoto = db.collection(config.collections.photo);
+    const dbPhoto = db.collection(config.collections.notes);
 
-    const result = await InsertOne<Photo>(dbPhoto, {
+    const result = await InsertOne<Note>(dbPhoto, {
       title,
       date,
       cover,
@@ -77,11 +77,11 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     });
   });
 
-  router.put("编辑相册", "/photo/:id", async (ctx, next) => {
+  router.put("编辑相册", "/notes/:id", async (ctx, next) => {
     const { id } = ctx.params;
-    const { title, date, cover, describe, content } = ctx.request.body as Photo;
+    const { title, date, cover, describe, content } = ctx.request.body as Note;
     const db = client.db(config.db);
-    const dbPhoto = db.collection(config.collections.photo);
+    const dbPhoto = db.collection(config.collections.notes);
     const item = await dbPhoto.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
@@ -106,10 +106,10 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.get("获取相册详情", "/photo/:id", async (ctx) => {
+  router.get("获取相册详情", "/notes/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
+    const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
     const _id = new ObjectId(id);
     const item = await dbPhoto.findOne({ _id });
     // 因为列表是新数据在最前面,即 ObjectId 小的在最后
@@ -134,7 +134,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     } else {
       const { content, cover, describe, title, date, _id } = item;
 
-      ctx.body = baseResponse<ReturnWithId<PhotoDetail>>({
+      ctx.body = baseResponse<ReturnWithId<NoteDetail>>({
         id: _id.toHexString(),
         content,
         cover,
@@ -147,10 +147,10 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.delete("删除相册", "/photo/:id", async (ctx) => {
+  router.delete("删除相册", "/notes/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbPhoto = db.collection<WithId<Photo>>(config.collections.photo);
+    const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
     const result = await dbPhoto.deleteOne({ _id: new ObjectId(id) });
     if (result.result.ok) {
       ctx.body = baseResponse(null);

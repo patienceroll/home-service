@@ -17,19 +17,19 @@ import Data from "./data";
 
 /** 初始化Home相关的路由 */
 const InitHomeRouters: InitRoutersType = (koa, router, client) => {
-  router.get("首页列表", "/home", async (ctx) => {
+  router.get("首页列表", "/project", async (ctx) => {
     const { query } = ctx.request;
     const page = Number(query.page);
     const perPage = Number(query.perPage);
 
     const db = client.db(config.db);
-    const dbHome = db.collection<WithId<Data.HomeItem>>(
-      config.collections.home
+    const dbHome = db.collection<WithId<Data.ProjectItem>>(
+      config.collections.project
     );
 
     const total = await dbHome.countDocuments();
 
-    const list: (Data.HomeItem & {
+    const list: (Data.ProjectItem & {
       id: string;
     })[] = [];
 
@@ -49,8 +49,8 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     ctx.body = listResponese({ list, page, perPage, total });
   });
 
-  router.post("新建", "/home", async (ctx) => {
-    const { title, subTitle, image, url } = ctx.request.body as Data.HomeItem;
+  router.post("新建", "/project", async (ctx) => {
+    const { title, subTitle, image, url } = ctx.request.body as Data.ProjectItem;
     const validateResult =
       Validate.isString([title, image, url]) &&
       (Validate.isEmpty(subTitle) || Validate.isString(subTitle));
@@ -59,8 +59,8 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
       return;
     }
     const db = client.db(config.db);
-    const dbHome = db.collection<Data.HomeItem>(config.collections.home);
-    const result = await InsertOne<Data.HomeItem>(dbHome, {
+    const dbHome = db.collection<Data.ProjectItem>(config.collections.project);
+    const result = await InsertOne<Data.ProjectItem>(dbHome, {
       title,
       subTitle,
       image,
@@ -75,11 +75,11 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     });
   });
 
-  router.get("获取一项", "/home/:id", async (ctx) => {
+  router.get("获取一项", "/project/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbHome = db.collection<WithId<Data.HomeItem>>(
-      config.collections.home
+    const dbHome = db.collection<WithId<Data.ProjectItem>>(
+      config.collections.project
     );
     const item = await dbHome.findOne({ _id: new ObjectId(id) });
     if (item) {
@@ -96,11 +96,11 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.put("编辑一项", "/home/:id", async (ctx, next) => {
+  router.put("编辑一项", "/project/:id", async (ctx, next) => {
     const { id } = ctx.params;
-    const { title, subTitle, image, url } = ctx.request.body as Data.HomeItem;
+    const { title, subTitle, image, url } = ctx.request.body as Data.ProjectItem;
     const db = client.db(config.db);
-    const dbHome = db.collection<Data.HomeItem>(config.collections.home);
+    const dbHome = db.collection<Data.ProjectItem>(config.collections.project);
     const item = await dbHome.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
@@ -114,11 +114,11 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.delete("删除home", "/home/:id", async (ctx) => {
+  router.delete("删除home", "/project/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
-    const dbHome = db.collection<WithId<Data.HomeItem>>(
-      config.collections.home
+    const dbHome = db.collection<WithId<Data.ProjectItem>>(
+      config.collections.project
     );
     const result = await dbHome.deleteOne({ _id: new ObjectId(id) });
     if (result.result.ok) {
