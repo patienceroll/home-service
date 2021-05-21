@@ -7,8 +7,8 @@ import config from "src/config/config";
 import connectMongo from "src/mongo/connect";
 
 import InitUpload from "src/controller/common/upload/upload";
-import InitHomeRouters from "src/controller/project";
-import InitPhotoRouters from "src/controller/notes";
+import InitProjectRouters from "src/controller/project";
+import InitNotesRouters from "src/controller/notes";
 
 const App = async () => {
   const koa = new Koa();
@@ -16,8 +16,8 @@ const App = async () => {
   const mongoClient = await connectMongo();
 
   InitUpload(koa, router, mongoClient);
-  InitHomeRouters(koa, router, mongoClient);
-  InitPhotoRouters(koa, router, mongoClient);
+  InitProjectRouters(koa, router, mongoClient);
+  InitNotesRouters(koa, router, mongoClient);
 
   koa.use(
     KoaBody({
