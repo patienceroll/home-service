@@ -15,9 +15,9 @@ import type { InitRoutersType } from "src/global";
 
 import Data from "./data";
 
-/** 初始化Home相关的路由 */
+/** 初始化项目相关的路由 */
 const InitHomeRouters: InitRoutersType = (koa, router, client) => {
-  router.get("首页列表", "/project", async (ctx) => {
+  router.get("项目列表", "/project", async (ctx) => {
     const { query } = ctx.request;
     const page = Number(query.page);
     const perPage = Number(query.perPage);
@@ -49,8 +49,9 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     ctx.body = listResponese({ list, page, perPage, total });
   });
 
-  router.post("新建", "/project", async (ctx) => {
-    const { title, subTitle, image, url } = ctx.request.body as Data.ProjectItem;
+  router.post("新建项目", "/project", async (ctx) => {
+    const { title, subTitle, image, url } = ctx.request
+      .body as Data.ProjectItem;
     const validateResult =
       Validate.isString([title, image, url]) &&
       (Validate.isEmpty(subTitle) || Validate.isString(subTitle));
@@ -75,7 +76,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     });
   });
 
-  router.get("获取一项", "/project/:id", async (ctx) => {
+  router.get("获取项目详情", "/project/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
     const dbHome = db.collection<WithId<Data.ProjectItem>>(
@@ -96,9 +97,10 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.put("编辑一项", "/project/:id", async (ctx, next) => {
+  router.put("编辑项目", "/project/:id", async (ctx, next) => {
     const { id } = ctx.params;
-    const { title, subTitle, image, url } = ctx.request.body as Data.ProjectItem;
+    const { title, subTitle, image, url } = ctx.request
+      .body as Data.ProjectItem;
     const db = client.db(config.db);
     const dbHome = db.collection<Data.ProjectItem>(config.collections.project);
     const item = await dbHome.findOne({ _id: new ObjectId(id) });
@@ -114,7 +116,7 @@ const InitHomeRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.delete("删除home", "/project/:id", async (ctx) => {
+  router.delete("删除项目", "/project/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
     const dbHome = db.collection<WithId<Data.ProjectItem>>(

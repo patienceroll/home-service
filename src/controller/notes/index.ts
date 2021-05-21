@@ -20,7 +20,7 @@ const { isString } = Validate;
 
 /** 初始化Photo相关的路由 */
 const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
-  router.get("相册列表", "/notes", async (ctx) => {
+  router.get("随记列表", "/notes", async (ctx) => {
     const { query } = ctx.request;
     const page = Number(query.page);
     const perPage = Number(query.perPage);
@@ -48,7 +48,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     ctx.body = listResponese({ list, page, perPage, total });
   });
 
-  router.post("新建相册", "/notes", async (ctx) => {
+  router.post("新建随记", "/notes", async (ctx) => {
     const { title, date, cover, describe, content } = ctx.request.body as Note;
 
     if (!isString([title, date, cover, describe, content])) {
@@ -77,7 +77,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     });
   });
 
-  router.put("编辑相册", "/notes/:id", async (ctx, next) => {
+  router.put("编辑随记", "/notes/:id", async (ctx, next) => {
     const { id } = ctx.params;
     const { title, date, cover, describe, content } = ctx.request.body as Note;
     const db = client.db(config.db);
@@ -106,7 +106,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.get("获取相册详情", "/notes/:id", async (ctx) => {
+  router.get("获取随记详情", "/notes/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
     const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
@@ -147,7 +147,7 @@ const InitPhotoRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.delete("删除相册", "/notes/:id", async (ctx) => {
+  router.delete("删除随记", "/notes/:id", async (ctx) => {
     const { id } = ctx.params;
     const db = client.db(config.db);
     const dbPhoto = db.collection<WithId<Note>>(config.collections.notes);
