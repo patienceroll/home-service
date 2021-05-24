@@ -48,7 +48,7 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
 
   router.post("登录", "/login", async (ctx) => {
     const { username, password } = ctx.request.body as User;
-    if (isEmpty(username) || isEmpty(password))
+    if (isEmpty([username, password]))
       return (ctx.body = errResponese(1, null, "请输入账号或密码"));
 
     const db = client.db(config.db);
