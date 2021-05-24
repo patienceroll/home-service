@@ -1,13 +1,12 @@
 import { ObjectId, WithId } from "mongodb";
 
 import config from "src/config/config";
-import * as Validate from "src/helper/validate-value/validate-value";
+import * as Validate from "src/helper/validate-value";
 import {
   baseResponse,
   listResponese,
   errResponese,
 } from "src/base-response/base-response";
-import { InsertOne } from "src/mongo/action/action";
 
 import { ErrorCodeMap } from "src/base-response/error-code";
 
@@ -60,13 +59,17 @@ const InitProjectRouters: InitRoutersType = (koa, router, client) => {
       return;
     }
     const db = client.db(config.db);
-    const dbProject = db.collection<Data.ProjectItem>(config.collections.project);
-    const result = await InsertOne<Data.ProjectItem>(dbProject, {
+    const dbProject = db.collection<Data.ProjectItem>(
+      config.collections.project
+    );
+
+    const result = await dbProject.insertOne({
       title,
       subTitle,
       image,
       url,
     });
+
     ctx.body = baseResponse({
       id: result.insertedId.toHexString(),
       title,
@@ -102,7 +105,9 @@ const InitProjectRouters: InitRoutersType = (koa, router, client) => {
     const { title, subTitle, image, url } = ctx.request
       .body as Data.ProjectItem;
     const db = client.db(config.db);
-    const dbProject = db.collection<Data.ProjectItem>(config.collections.project);
+    const dbProject = db.collection<Data.ProjectItem>(
+      config.collections.project
+    );
     const item = await dbProject.findOne({ _id: new ObjectId(id) });
 
     if (!item) {

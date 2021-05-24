@@ -1,4 +1,4 @@
-import koa, { DefaultState, DefaultContext } from "koa";
+import type Koa, { DefaultState, DefaultContext } from "koa";
 import Router from "koa-router";
 import { MongoClient } from "mongodb";
 

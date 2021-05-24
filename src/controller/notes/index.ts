@@ -7,8 +7,7 @@ import {
 } from "src/base-response/base-response";
 import type { ReturnWithId } from "src/base-response/base-response";
 
-import * as Validate from "src/helper/validate-value/validate-value";
-import { InsertOne } from "src/mongo/action/action";
+import * as Validate from "src/helper/validate-value";
 
 import { ErrorCodeMap } from "src/base-response/error-code";
 import config from "src/config/config";
@@ -59,7 +58,7 @@ const InitNotesRouters: InitRoutersType = (koa, router, client) => {
     const db = client.db(config.db);
     const dbNotes = db.collection(config.collections.notes);
 
-    const result = await InsertOne<Note>(dbNotes, {
+    const result = await dbNotes.insertOne({
       title,
       date,
       cover,
