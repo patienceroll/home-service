@@ -15,9 +15,10 @@ input.click();
 const login = function () {
   fetch("http://localhost:3001/api/v1/login", {
     method: "POST",
+    headers: { "content-type": "application/json" },
     body: JSON.stringify({
       password: "123456",
-      usename: "test",
+      username: "test",
     }),
   });
 };

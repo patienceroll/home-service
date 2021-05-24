@@ -26,7 +26,7 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
     // 判断是否注册过了?
     const exsist = await dbUsers.findOne({ username });
     console.log(exsist);
-    if (exsist) return (ctx.body = errResponese(3, null, "此账号已被使用"));
+    if (exsist) return (ctx.body = errResponese(3, null, "此账号已注册"));
 
     // 加密密码
     const encodePassword = CryptoJS.AES.encrypt(
@@ -52,9 +52,19 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
     if (isEmpty(username) || isEmpty(password))
       return (ctx.body = errResponese(1, null, "请输入账号或密码"));
 
-    const collection = client.db(config.collections.users);
+    const db = client.db(config.db);
+    const dbUsers = db.collection(config.collections.users);
 
-    ctx.body = baseResponse(null);
+    const user = await dbUsers.findOne<WithId<User>>({ username });
+    if (user) {
+      const token = JsonwebToken.sign(
+        { username, id: user._id.toHexString() },
+        "home"
+      );
+      ctx.body = baseResponse({ token });
+    } else {
+      ctx.body = errResponese(2, null, "账号或密码错误");
+    }
   });
 };
 
