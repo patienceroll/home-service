@@ -33,3 +33,13 @@ const sign = function (username, password) {
     }),
   });
 };
+
+const isLogin = function (authorization) {
+  fetch("http://localhost:3001/api/v1/islogin", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization,
+    },
+  });
+};

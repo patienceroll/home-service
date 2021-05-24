@@ -1,5 +1,5 @@
-import { ObjectId, WithId } from "mongodb";
-import JsonwebToken from "jsonwebtoken";
+import { WithId } from "mongodb";
+import JsonWebToken from "jsonwebtoken";
 import CryptoJS from "crypto-js";
 
 import config from "src/config/config";
@@ -25,7 +25,6 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
 
     // 判断是否注册过了?
     const exsist = await dbUsers.findOne({ username });
-    console.log(exsist);
     if (exsist) return (ctx.body = errResponese(3, null, "此账号已注册"));
 
     // 加密密码
@@ -41,9 +40,9 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
     });
 
     const id = result.insertedId.toHexString();
-
-    const token = JsonwebToken.sign({ username, id }, "home");
-
+    const token = JsonWebToken.sign({ username, id }, "secret", {
+      expiresIn: config.tokenTime,
+    });
     ctx.body = baseResponse({ id, token });
   });
 
@@ -56,14 +55,29 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
     const dbUsers = db.collection(config.collections.users);
 
     const user = await dbUsers.findOne<WithId<User>>({ username });
+
     if (user) {
-      const token = JsonwebToken.sign(
+      const token = JsonWebToken.sign(
         { username, id: user._id.toHexString() },
-        "home"
+        "secret",
+        {
+          expiresIn: config.tokenTime,
+        }
       );
       ctx.body = baseResponse({ token });
     } else {
       ctx.body = errResponese(2, null, "账号或密码错误");
+    }
+  });
+
+  router.post("验证登录状态", "/islogin", async (ctx) => {
+    const { authorization } = ctx.header;
+    if (!authorization) return (ctx.body = baseResponse({ islogin: false }));
+    try {
+      JsonWebToken.verify(authorization, "secret");
+      ctx.body = baseResponse({ islogin: true });
+    } catch (e) {
+      ctx.body = baseResponse({ islogin: false });
     }
   });
 };

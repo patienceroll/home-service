@@ -12,6 +12,8 @@ const config = {
   port: 3001,
   dbUrl: getDbUrl(),
   db: "home",
+  /** token 有效期 单位秒 */
+  tokenTime: 60 * 60 * 24 * 7,
   collections: {
     users: "users",
     notes: "notes",
