@@ -96,7 +96,7 @@ const InitProjectRouters: InitRoutersType = (koa, router, client) => {
         title,
       });
     } else {
-      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null);
     }
   });
 
@@ -111,7 +111,7 @@ const InitProjectRouters: InitRoutersType = (koa, router, client) => {
     const item = await dbProject.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
-      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null);
     } else {
       await dbProject.updateOne(
         { _id: new ObjectId(id) },
@@ -131,7 +131,7 @@ const InitProjectRouters: InitRoutersType = (koa, router, client) => {
     if (result.result.ok) {
       ctx.body = baseResponse(null);
     } else {
-      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null);
     }
   });
 };

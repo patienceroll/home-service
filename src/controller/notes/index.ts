@@ -84,7 +84,7 @@ const InitNotesRouters: InitRoutersType = (koa, router, client) => {
     const item = await dbNotes.findOne({ _id: new ObjectId(id) });
 
     if (!item) {
-      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null);
       return;
     } else {
       await dbNotes.updateOne(
@@ -129,7 +129,7 @@ const InitNotesRouters: InitRoutersType = (koa, router, client) => {
       .toArray();
 
     if (!item) {
-      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null);
     } else {
       const { content, cover, describe, title, date, _id } = item;
 
@@ -154,7 +154,7 @@ const InitNotesRouters: InitRoutersType = (koa, router, client) => {
     if (result.result.ok) {
       ctx.body = baseResponse(null);
     } else {
-      ctx.body = errResponese(2, null, ErrorCodeMap[2]);
+      ctx.body = errResponese(2, null);
     }
   });
 };

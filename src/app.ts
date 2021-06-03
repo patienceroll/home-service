@@ -6,6 +6,8 @@ import config from "src/config/config";
 
 import { connect } from "mongodb";
 
+import MiddleWareAuth from "src/middle-ware/check-auth";
+
 import InitUpload from "src/controller/common/upload/upload";
 import InitProjectRouters from "src/controller/project";
 import InitNotesRouters from "src/controller/notes";
@@ -21,6 +23,8 @@ const App = async () => {
       multipart: true,
     })
   );
+
+  koa.use(MiddleWareAuth);
   koa.use(router.routes());
 
   InitAuthRouters(koa, router, mongoClient);
