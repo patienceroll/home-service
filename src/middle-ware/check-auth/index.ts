@@ -11,13 +11,13 @@ const MiddleWareAuth: Middleware = async (ctx, next) => {
   } = ctx;
 
   if (path) {
-    next();
+    await next();
   } else if (typeof authorization === "undefined") {
     ctx.body = errResponese(4, null);
   } else {
     try {
       JsonWebToken.verify(authorization, "secret");
-      next();
+      await next();
     } catch (e) {
       ctx.body = errResponese(4, null);
     }
