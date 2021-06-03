@@ -11,6 +11,7 @@ const MiddleWareAuth: Middleware = async (ctx, next) => {
   } = ctx;
 
   if (path) {
+    console.log(path);
     await next();
   } else if (typeof authorization === "undefined") {
     ctx.body = errResponese(4, null);
