@@ -11,20 +11,24 @@ const IgnoreRoute: {
   methods: RegExp;
   path: string | RegExp;
 }[] = [
-  { path: "login", methods: /POST/g },
-  { path: "islogin", methods: /POST/g },
-  { path: "sign", methods: /POST/g },
-  { path: "project", methods: /GET/g },
-  { path: "notes", methods: /GET/g },
+  { path: "login", methods: /POST/ },
+  { path: "islogin", methods: /POST/ },
+  { path: "sign", methods: /POST/ },
+  { path: "project", methods: /GET/ },
+  { path: "notes", methods: /GET/ },
 ];
 
 const isIgnoreRoute = (path: string, method: string) => {
   return (
+    -1 !==
     IgnoreRoute.findIndex((i) => {
-      if (typeof i.path === "string")
-        return config.router.prefix + i.path === path && i.methods.test(method);
+      if (typeof i.path === "string") {
+        return (
+          `${config.router.prefix}${i.path}` === path && i.methods.test(method)
+        );
+      }
       return i.path.test(path) && i.methods.test(method);
-    }) !== -1
+    })
   );
 };
 
@@ -37,7 +41,10 @@ const MiddleWareAuth: Middleware = async (ctx, next) => {
 
   if (isIgnoreRoute(path, method)) {
     await next();
-  } else if (typeof authorization === "undefined") {
+  } else if (
+    typeof authorization === "undefined" ||
+    authorization.trim() === ""
+  ) {
     ctx.body = errResponese(4, null);
   } else {
     try {
