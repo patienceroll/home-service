@@ -19,11 +19,13 @@ const IgnoreRoute: {
 ];
 
 const isIgnoreRoute = (path: string, method: string) => {
-  return IgnoreRoute.findIndex((i) => {
-    if (typeof i.path === "string")
-      return config.router.prefix + i.path === path && i.methods.test(method);
-    return i.path.test(path) && i.methods.test(method);
-  });
+  return (
+    IgnoreRoute.findIndex((i) => {
+      if (typeof i.path === "string")
+        return config.router.prefix + i.path === path && i.methods.test(method);
+      return i.path.test(path) && i.methods.test(method);
+    }) !== -1
+  );
 };
 
 const MiddleWareAuth: Middleware = async (ctx, next) => {
