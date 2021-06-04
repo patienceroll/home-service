@@ -20,7 +20,7 @@ const config = {
     project: "project",
   },
   router: {
-    prefix: "/api/v1",
+    prefix: "/api/v1/",
   },
 };
 

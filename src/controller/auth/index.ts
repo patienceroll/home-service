@@ -12,7 +12,7 @@ import type { User } from "./data";
 
 /** 初始化认证相关的路由 */
 const InitAuthRouters: InitRoutersType = (koa, router, client) => {
-  router.post("注册", "/sign", async (ctx) => {
+  router.post("注册", "sign", async (ctx) => {
     const { username, password } = ctx.request.body as User;
 
     if (isEmpty(username))
@@ -46,7 +46,7 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
     ctx.body = baseResponse({ id, token });
   });
 
-  router.post("登录", "/login", async (ctx) => {
+  router.post("登录", "login", async (ctx) => {
     const { username, password } = ctx.request.body as User;
     if (isEmpty([username, password]))
       return (ctx.body = errResponese(1, null, "请输入账号或密码"));
@@ -70,7 +70,7 @@ const InitAuthRouters: InitRoutersType = (koa, router, client) => {
     }
   });
 
-  router.post("验证登录状态", "/islogin", async (ctx) => {
+  router.post("验证登录状态", "islogin", async (ctx) => {
     const { authorization } = ctx.header;
     if (!authorization) return (ctx.body = baseResponse({ islogin: false }));
     try {
