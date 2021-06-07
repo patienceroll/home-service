@@ -15,7 +15,7 @@ const IgnoreRoute: {
   { path: "islogin", methods: /POST/ },
   { path: "sign", methods: /POST/ },
   { path: "project", methods: /GET/ },
-  { path: "notes", methods: /GET/ },
+  { path: /notes\/[a-z0-9A-Z]*$/, methods: /GET/ },
 ];
 
 const isIgnoreRoute = (path: string, method: string) => {
